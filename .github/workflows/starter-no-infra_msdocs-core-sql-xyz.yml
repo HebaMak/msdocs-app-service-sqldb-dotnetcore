@@ -39,13 +39,13 @@ jobs:
         run: dotnet publish -c Release -o ./publish
 
       - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --output ./myapp/migrations.bundle
+        run: dotnet ef migrations bundle --output ./publish/migrations.bundle --project ./YourProject.csproj
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ./publish
 
   deploy:
     runs-on: ubuntu-latest
