@@ -33,16 +33,16 @@ jobs:
         run: dotnet tool install --global dotnet-ef
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
+        run: dotnet publish -c Release -o ${{ env.DOTNET_ROOT }}/myapp
 
       - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --output ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
+        run: dotnet ef migrations bundle --output ${{ env.DOTNET_ROOT }}/myapp/migrations.bundle
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: ${{ env.DOTNET_ROOT }}/myapp
 
   deploy:
     runs-on: ubuntu-latest
@@ -70,5 +70,5 @@ jobs:
         with:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp
+          package: ${{ env.DOTNET_ROOT }}/myapp
 
