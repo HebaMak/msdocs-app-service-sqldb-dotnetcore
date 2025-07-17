@@ -75,3 +75,4 @@ jobs:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
           package: .
+          
