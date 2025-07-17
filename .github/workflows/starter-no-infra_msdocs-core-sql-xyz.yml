@@ -70,5 +70,5 @@ jobs:
         with:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
-          package: ${{ env.DOTNET_ROOT }}/myapp
+          package: .
 
