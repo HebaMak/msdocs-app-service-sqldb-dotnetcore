@@ -74,5 +74,5 @@ jobs:
         with:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
-          package: .net-app
+          package: .
           
