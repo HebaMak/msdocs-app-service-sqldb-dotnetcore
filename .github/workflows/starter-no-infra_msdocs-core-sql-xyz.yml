@@ -32,10 +32,8 @@ jobs:
       - name: Install dotnet-ef
         run: dotnet tool install --global dotnet-ef
 
-      - name: Build EF Migrations Bundle
-        run: |
-          dotnet restore
-          dotnet ef migrations bundle --output myapp/migrationsbundle --configuration Release --project src/TodoApp/TodoApp.csproj --startup-project src/TodoApp/TodoApp.csproj
+      - name: Create EF Core migrations bundle
+        run: dotnet ef migrations bundle --output ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
 
       - name: Publish .NET app
         run: dotnet publish src/TodoApp/TodoApp.csproj -c Release -o myapp
