@@ -72,7 +72,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'msdocs-core-sql-XYZ'
+          app-name: 'ms-todo-webapp'
           slot-name: 'Production'
           package: .
           
