@@ -76,6 +76,9 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20EAB20743E4403902158D62800B7D3 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B8366EC6061B43388D460C291605CB80 }}
 
+      - name: Stop Azure Web App to avoid 409 Conflict
+        run: az webapp stop --name ms-todo-webapp --resource-group Microsoft-todo-webapp
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -83,3 +86,11 @@ jobs:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
           package: .
+      - name: Run EF Migrations Bundle
+        run: ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
+
+      - name: Start Azure Web App
+        run: az webapp start --name ms-todo-webapp --resource-group Microsoft-todo-webapp
+      
+      - name: Run EF Migrations Bundle
+        run: ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
