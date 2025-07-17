@@ -64,26 +64,24 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          auth-type: 'federated'
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E28C72F46C3E46FDBECC489806502040 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20EAB20743E4403902158D62800B7D3 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B8366EC6061B43388D460C291605CB80 }}
 
       - name: Deploy migration bundle to Web App
         run: |
-          az webapp ssh --resource-group YourResourceGroupName --name ms-todo-webapp --command "mkdir -p /home/site/wwwroot/migrations"
-          az webapp ssh --resource-group YourResourceGroupName --name ms-todo-webapp --command "rm -f /home/site/wwwroot/migrations/migrations.bundle"
-          cat ${{env.DOTNET_ROOT}}/myapp/migrations.bundle | az webapp ssh --resource-group YourResourceGroupName --name ms-todo-webapp --command "cat > /home/site/wwwroot/migrations/migrations.bundle"
-          az webapp ssh --resource-group YourResourceGroupName --name ms-todo-webapp --command "chmod +x /home/site/wwwroot/migrations/migrations.bundle"
+          az webapp ssh --resource-group Microsoft-todo-webapp --name ms-todo-webapp --command "mkdir -p /home/site/wwwroot/migrations"
+          az webapp ssh --resource-group Microsoft-todo-webapp --name ms-todo-webapp --command "rm -f /home/site/wwwroot/migrations/migrations.bundle"
+          cat myapp/migrations.bundle | az webapp ssh --resource-group Microsoft-todo-webapp --name ms-todo-webapp --command "cat > /home/site/wwwroot/migrations/migrations.bundle"
+          az webapp ssh --resource-group Microsoft-todo-webapp --name ms-todo-webapp --command "chmod +x /home/site/wwwroot/migrations/migrations.bundle"
 
       - name: Run EF Core migration bundle
         run: |
-          az webapp ssh --resource-group YourResourceGroupName --name ms-todo-webapp --command "/home/site/wwwroot/migrations/migrations.bundle --verbose --no-build"
+          az webapp ssh --resource-group Microsoft-todo-webapp --name ms-todo-webapp --command "/home/site/wwwroot/migrations/migrations.bundle --verbose --no-build"
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
-          package: ${{env.DOTNET_ROOT}}/myapp
- 
+          package: myapp
