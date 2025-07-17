@@ -70,5 +70,5 @@ jobs:
         with:
           app-name: 'ms-todo-webapp'
           slot-name: 'Production'
-          package: ./msdocs-app-service-sqldb-dotnetcore/msdocs-app-service-sqldb-dotnetcore/myapp
+          package: .
 
