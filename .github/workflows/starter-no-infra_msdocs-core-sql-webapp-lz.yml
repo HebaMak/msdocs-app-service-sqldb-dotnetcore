@@ -34,6 +34,9 @@ jobs:
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
+      - name: Delete previous bundle if exists
+        run: rm -f ${{env.DOTNET_ROOT}}/myapp/migrationsbundle
+
       - name: Create EF Core migrations bundle
         run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp
 
@@ -66,12 +69,12 @@ jobs:
           subscription-id: 9b5220ee-29d0-4030-ae3b-7aae1a4296e6
 
       - name: Run migration bundle via SSH
-        run: |
-          az webapp ssh \
-            --resource-group rg-hs-todo \
-            --name hs-ms-webapp-private-db \
-            --command "chmod +x /home/site/wwwroot/migrationsbundle && /home/site/wwwroot/migrationsbundle -- --environment Production"    
-      
+  run: |
+    az webapp ssh \
+      --resource-group HS-webapp-db-private-endpoint \
+      --name hs-ms-webapp-private-db \
+      --command "chmod +x /home/site/wwwroot/migrationsbundle && /home/site/wwwroot/migrationsbundle -- --environment Production"
+
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
