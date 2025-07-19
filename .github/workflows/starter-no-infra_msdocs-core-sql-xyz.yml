@@ -16,30 +16,18 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GH_TOKEN }}
+      - uses: actions/checkout@v4
 
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
-      
-      - name: Restore dependencies
-        run: dotnet restore
 
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: Install dotnet-ef
-        run: dotnet tool install --global dotnet-ef
-
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-
-      - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --output ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -64,15 +52,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_E28C72F46C3E46FDBECC489806502040 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_A20EAB20743E4403902158D62800B7D3 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B8366EC6061B43388D460C291605CB80 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_338A090F1080436E97018252FE4D5732 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_26FD7C9042B847D3B90169822E65AE0F }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_312446B95A424C779BA384BA15904CEC }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'ms-todo-webapp'
+          app-name: 'msdocs-core-sql-XYZ'
           slot-name: 'Production'
           package: .
           
