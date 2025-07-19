@@ -33,7 +33,7 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle
+        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp/migrations.bundle
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -58,22 +58,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: 2a7ffb0d-01cd-418f-954a-f9116fb0c6b9
-          tenant-id: 5750da6a-1c1f-48a6-bd93-148a77872e28
-          subscription-id: 9b5220ee-29d0-4030-ae3b-7aae1a4296e6
-
-        # first deploy via portal
-        # with:
-        #   client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_07194F1DCE664C1D8F474B29152AA71C }}
-        #   tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EA646182DD854C22B30FAC60FDBFA2F1 }}
-        #   subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_58AD744513E54AA4872ADA8FD4D765D3 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_07194F1DCE664C1D8F474B29152AA71C }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EA646182DD854C22B30FAC60FDBFA2F1 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_58AD744513E54AA4872ADA8FD4D765D3 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'hs-ms-webapp-private-db'
-          # app-name: 'msdocs-core-sql-webapp'
+          app-name: 'msdocs-core-sql-webapp'
           slot-name: 'Production'
           package: .
           
