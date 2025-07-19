@@ -35,7 +35,7 @@ jobs:
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Create EF Core migrations bundle
-        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp/migrationsbundle
+        run: dotnet ef migrations bundle --runtime linux-x64 -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -56,6 +56,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: dotnet-migration-bundle
+          path: ./myapp
       
       - name: Login to Azure
         uses: azure/login@v2
@@ -64,10 +65,17 @@ jobs:
           tenant-id: 5750da6a-1c1f-48a6-bd93-148a77872e28
           subscription-id: 9b5220ee-29d0-4030-ae3b-7aae1a4296e6
 
+      - name: Run migration bundle via SSH
+        run: |
+          az webapp ssh \
+            --resource-group rg-hs-todo \
+            --name hs-ms-webapp-private-db \
+            --command "chmod +x /home/site/wwwroot/migrationsbundle && /home/site/wwwroot/migrationsbundle -- --environment Production"    
+      
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'hs-ms-webapp-private-db'
           slot-name: 'Production'
-          package: .
+          package: ./myapp
