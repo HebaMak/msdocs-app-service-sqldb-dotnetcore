@@ -1,11 +1,13 @@
-name: Build and deploy to new infra - hs-webapp-private-db
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
+name: Build and deploy ASP.Net Core app to Azure Web App - msdocs-core-sql-webapp
 
 on:
   push:
     branches:
       - starter-no-infra
   workflow_dispatch:
-
+  
 permissions:
   id-token: write
   contents: read
@@ -13,7 +15,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,13 +25,13 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Build project
+      - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: Install dotnet-ef
         run: dotnet tool install -g dotnet-ef --version 8.*
 
-      - name: Publish project
+      - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Create EF Core migrations bundle
@@ -44,25 +46,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-
+    
     permissions:
-      id-token: write
-      contents: read
+      id-token: write #This is required for requesting the JWT
+      contents: read #This is required for actions/checkout
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
           name: dotnet-migration-bundle
-
-      - name: Login to Azure using OIDC and UAMI
+      
+      - name: Login to Azure
         uses: azure/login@v2
         with:
           client-id: 2a7ffb0d-01cd-418f-954a-f9116fb0c6b9
           tenant-id: 5750da6a-1c1f-48a6-bd93-148a77872e28
           subscription-id: 9b5220ee-29d0-4030-ae3b-7aae1a4296e6
 
-      - name: Deploy to new Azure Web App
+      - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
