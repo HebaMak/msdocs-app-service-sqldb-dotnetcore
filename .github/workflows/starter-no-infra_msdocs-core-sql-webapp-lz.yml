@@ -1,6 +1,9 @@
 name: Build and deploy to new infra - hs-webapp-private-db
 
 on:
+  push:
+    branches:
+      - starter-no-infra
   workflow_dispatch:
 
 permissions:
